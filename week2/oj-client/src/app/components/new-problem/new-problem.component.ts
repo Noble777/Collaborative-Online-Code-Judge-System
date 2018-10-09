@@ -18,15 +18,20 @@ const DEFAULT_PROBLEM: Problem = Object.freeze({
 })
 
 export class NewProblemComponent implements OnInit {
-	  newProblem: Problem = Object.assign({}, DEFAULT_PROBLEM);
- 	  difficulties: string[] = ['easy', 'medium', 'hard', 'super'];
+	newProblem: Problem = Object.assign({}, DEFAULT_PROBLEM);
+ 	difficulties: string[] = ['easy', 'medium', 'hard', 'super'];
+  	constructor(private dataService: DataService) {}
 
   	ngOnInit() {
 
-    }
-    constructor(private dataService: DataService) {}
-  	addProblem() {
+  }
+
+  	 addProblem() {
  			this.dataService.addProblem(this.newProblem);
-      this.newProblem = Object.assign({}, DEFAULT_PROBLEM);
-   }
+ // assign newProblem a new problem instance
+ // Otherwise newProblem have same reference as the one we added to	the list
+ // then when next time add new problem, it will override the problem we have already add into the problem list.
+ 			this.newProblem = Object.assign({}, DEFAULT_PROBLEM);
+ }
+
 }
