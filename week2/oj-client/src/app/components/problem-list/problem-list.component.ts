@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Problem } from '../../models/problem.model';
-import { PROBLEMS} from '../../mock-problems';
 import { DataService } from '../../services/data.service';
 
 
@@ -11,15 +11,23 @@ import { DataService } from '../../services/data.service';
 })
 
 export class ProblemListComponent implements OnInit {
- // private problems list inside the component
- 	problems: Problem[];
- 	constructor(private dataService: DataService) {}
- 	ngOnInit() {
- 	//initialize problems in this class
- 		this.getProblems();
- 	}
- 	
- 	getProblems() {
- 		this.problems = this.dataService.getProblems();
- 	}
+ problems: Problem[];
+	subscriptionProblems: Subscription;
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit() {
+  	this.getProblems();
+  }
+
+  ngOnDestroy() {
+  	this.subscriptionProblems.unsubscribe();
+  }
+
+  getProblems() {
+  	//this.problems = this.dataService.getProblems();
+  	this.subscriptionProblems = this.dataService.getProblems()
+  		.subscribe(problems => this.problems = problems);
+  }
+
 }

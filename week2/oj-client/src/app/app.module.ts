@@ -9,6 +9,8 @@ import { ProblemDetailComponent } from './components/problem-detail/problem-deta
 import { routing} from './app.routes';
 import { NewProblemComponent } from './components/new-problem/new-problem.component';
 
+import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +21,8 @@ import { NewProblemComponent } from './components/new-problem/new-problem.compon
   imports: [
     BrowserModule,
     routing,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
