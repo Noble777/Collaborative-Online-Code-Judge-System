@@ -285,7 +285,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\" *ngIf=\"problem\">\n\t<div class=\"col-sm-12 col-md-4\">\n \t\t<div>\n \t\t\t<h2>\n \t\t\t\t{{problem.id}}. {{problem.name}}\n \t\t\t</h2>\n \t\t\t<p>\n \t\t\t\t{{problem.desc}}\n \t\t\t</p>\n\t\t\t \n \t\t</div>\n\t</div>\n\t<div class=\"hidden-xs col-sm-12 col-md-8\">\n\t\t<app-editor></app-editor>\n\t</div>\n</div>\n"
+module.exports = "<div class=\"container\" *ngIf=\"problem\">\n\t<div class = \"row\">\n\t\t<div class=\"col-sm-12 col-md-4\">\n\t \t\t<div>\n\t \t\t\t<h2>\n\t \t\t\t\t{{problem.id}}. {{problem.name}}\n\t \t\t\t</h2>\n\t \t\t\t<p>\n\t \t\t\t\t{{problem.desc}}\n\t \t\t\t</p>\n\t \t\t</div>\n\t\t</div>\n\t\t<div class=\"hidden-xs col-sm-12 col-md-8\">\n\t\t\t<app-editor></app-editor>\n\t\t</div>\n\t</div>\n</div>\n"
 
 /***/ }),
 
@@ -436,7 +436,7 @@ module.exports = "@media screen { \n #editor { \n   height: 600px; \n } \n  .lan
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"editor\"></div>\n"
+module.exports = "<section>\n  <header class=\"editor-header\">\n    <div class=\"row\">\n      <select class=\"form-control pull-left lang-select\" name=\"language\"\n        [(ngModel)]=\"language\" (change)=\"setLanguage(language)\">\n      <option *ngFor=\"let language of languages\" [value]=\"language\">\n        {{language}}\n      </option>\n      </select>\n      <!--reset button -->\n      <!-- Button trigger modal -->\n      <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#myModal\">\n        Reset\n      </button>\n\n      <!-- Modal -->\n      <div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"exampleModalLabel\" aria-hidden=\"true\">\n        <div class=\"modal-dialog\" role=\"document\">\n          <div class=\"modal-content\">\n            <div class=\"modal-header\">\n              <h5 class=\"modal-title\" id=\"exampleModalLabel\">Are you sure</h5>\n              <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n                <span aria-hidden=\"true\">&times;</span>\n              </button>\n            </div>\n            <div class=\"modal-body\">\n              You will lose current code in the editor, are you sure?\n            </div>\n            <div class=\"modal-footer\">\n              <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>\n              <button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\"\n              (click)=\"resetEditor()\">Reset</button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </header>\n\n  <div id=\"editor\">\n  </div><!-- This is the body -->\n  \n  <footer class=\"editor-footer\">\n      <button type=\"button\" class=\"btn btn-success pull-right\" \n      (click)=\"submit()\">Submit Solution</button>\n  </footer>\n</section>\n"
 
 /***/ }),
 
@@ -463,6 +463,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var EditorComponent = /** @class */ (function () {
     function EditorComponent() {
+        this.languages = ['Java', 'Python'];
+        this.language = 'Java';
         this.defaultContent = {
             'Java': "public class Example {\n\t\t\tpublic static void main(String[] args) {\n\t\t\t\t// Type your Java code here\n\t\t\t}\n\t\t}\n\t\t",
             'Python': "class Solution:\n\t\t\tdef example():\n\t\t\t\t# write your Python code here"
@@ -471,8 +473,20 @@ var EditorComponent = /** @class */ (function () {
     EditorComponent.prototype.ngOnInit = function () {
         this.editor = ace.edit("editor");
         this.editor.setTheme("ace/theme/eclipse");
-        this.editor.getSession().setMode("ace/mode/java");
-        this.editor.setValue(this.defaultContent['Java']);
+        this.resetEditor();
+    };
+    // refactor 
+    EditorComponent.prototype.resetEditor = function () {
+        this.editor.getSession().setMode("ace/mode/" + this.language.toLowerCase());
+        this.editor.setValue(this.defaultContent[this.language]);
+    };
+    EditorComponent.prototype.setLanguage = function (language) {
+        this.language = language;
+        this.resetEditor();
+    };
+    EditorComponent.prototype.submit = function () {
+        var usercode = this.editor.getValue();
+        console.log(usercode);
     };
     EditorComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
