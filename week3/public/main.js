@@ -245,7 +245,7 @@ var EditorComponent = /** @class */ (function () {
         this.output = '';
         this.defaultContent = {
             'Java': "public class Example {\n      public static void main(String[] args) {\n        // Type your Java code here\n      }\n    }\n    ",
-            'Python': "class Solution:\n      def example():\n        # write your Python code here"
+            'Python': "class Solution:\n      def example():\n        # write your Python code here\n\n      if __name__ == '__main__':\n        example()\n       "
         };
     }
     EditorComponent.prototype.ngOnInit = function () {

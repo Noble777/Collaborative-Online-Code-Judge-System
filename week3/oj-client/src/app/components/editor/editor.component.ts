@@ -26,7 +26,11 @@ export class EditorComponent implements OnInit {
     `,
     'Python': `class Solution:
       def example():
-        # write your Python code here`
+        # write your Python code here
+
+      if __name__ == '__main__':
+        example()
+       `
   };
 
   constructor(private collaboration: CollaborationService,

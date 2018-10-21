@@ -101,7 +101,7 @@ def build_and_run(code, lang):
 		)
 
 		log = str(log, 'utf-8')
-		print(1)
+		
 		print(log)
 
 		result['run'] = log
