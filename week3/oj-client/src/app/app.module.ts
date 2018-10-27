@@ -11,6 +11,7 @@ import { NewProblemComponent } from './components/new-problem/new-problem.compon
 
 import { HttpClientModule } from '@angular/common/http';
 import { EditorComponent } from './components/editor/editor.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { EditorComponent } from './components/editor/editor.component';
     ProblemListComponent,
     ProblemDetailComponent,
     NewProblemComponent,
-    EditorComponent
+    EditorComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
