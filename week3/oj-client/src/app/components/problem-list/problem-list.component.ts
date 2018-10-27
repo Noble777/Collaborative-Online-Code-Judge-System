@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Problem } from '../../models/problem.model';
 import { DataService } from '../../services/data.service';
-
+import { InputService } from '../../services/input.service';
 
 @Component({
   selector: 'app-problem-list',
@@ -14,10 +14,15 @@ export class ProblemListComponent implements OnInit {
  problems: Problem[];
 	subscriptionProblems: Subscription;
 
-  constructor(private dataService: DataService) { }
+  searchTerm: string = '';
+  subscriptionInput: Subscription;
+
+  constructor(private dataService: DataService,
+              private inputService: InputService) { }
 
   ngOnInit() {
   	this.getProblems();
+    this.getSearchTerm();
   }
 
   ngOnDestroy() {
@@ -28,6 +33,13 @@ export class ProblemListComponent implements OnInit {
   	//this.problems = this.dataService.getProblems();
   	this.subscriptionProblems = this.dataService.getProblems()
   		.subscribe(problems => this.problems = problems);
+  }
+
+    getSearchTerm(): void {
+    this.subscriptionInput = this.inputService.getInput()
+                                .subscribe(
+                                  inputTerm => this.searchTerm = inputTerm
+                                );
   }
 
 }
