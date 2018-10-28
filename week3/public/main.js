@@ -212,7 +212,7 @@ module.exports = "@media screen { \n #editor { \n   height: 600px; \n } \n  .lan
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<section>\n  <header class=\"editor-header\">\n    <div class=\"row\">\n      <select class=\"form-control pull-left lang-select\" name=\"language\"\n        [(ngModel)]=\"language\" (change)=\"setLanguage(language)\">\n      <option *ngFor=\"let language of languages\" [value]=\"language\">\n        {{language}}\n      </option>\n      </select>\n      <!--reset button -->\n      <!-- Button trigger modal -->\n      <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#myModal\">\n        Reset\n      </button>\n\n      <!-- Modal -->\n      <div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"exampleModalLabel\" aria-hidden=\"true\">\n        <div class=\"modal-dialog\" role=\"document\">\n          <div class=\"modal-content\">\n            <div class=\"modal-header\">\n              <h5 class=\"modal-title\" id=\"exampleModalLabel\">Are you sure</h5>\n              <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n                <span aria-hidden=\"true\">&times;</span>\n              </button>\n            </div>\n            <div class=\"modal-body\">\n              You will lose current code in the editor, are you sure?\n            </div>\n            <div class=\"modal-footer\">\n              <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>\n              <button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\"\n              (click)=\"resetEditor()\">Reset</button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </header>\n\n  <div id=\"editor\">\n  </div><!-- This is the body -->\n  \n  <div>\n    {{output}}\n  </div>\n\n  <footer class=\"editor-footer\">\n      <button type=\"button\" class=\"btn btn-success pull-right\" \n      (click)=\"submit()\">Submit Solution</button>\n  </footer>\n</section>\n"
+module.exports = "<section>\n  <header class=\"editor-header\">\n    <div class=\"row\">\n      <select class=\"form-control pull-left lang-select\" name=\"language\"\n        [(ngModel)]=\"language\" (change)=\"setLanguage(language)\">\n      <option *ngFor=\"let language of languages\" [value]=\"language\">\n        {{language}}\n      </option>\n      </select>\n      <!--reset button -->\n      <!-- Button trigger modal -->\n      <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#myModal\">\n        Reset\n      </button>\n\n      <!-- Modal -->\n      <div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"exampleModalLabel\" aria-hidden=\"true\">\n        <div class=\"modal-dialog\" role=\"document\">\n          <div class=\"modal-content\">\n            <div class=\"modal-header\">\n              <h5 class=\"modal-title\" id=\"exampleModalLabel\">Are you sure</h5>\n              <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n                <span aria-hidden=\"true\">&times;</span>\n              </button>\n            </div>\n            <div class=\"modal-body\">\n              You will lose current code in the editor, are you sure?\n            </div>\n            <div class=\"modal-footer\">\n              <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>\n              <button type=\"button\" class=\"btn btn-primary\" data-dismiss=\"modal\"\n              (click)=\"resetEditor()\">Reset</button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </header>\n\n  <div id=\"editor\">\n  </div><!-- This is the body -->\n  \n  <div>\n    {{output}}\n  </div>\n\n  <div>\n    Users: {{users}}\n  </div>\n\n  <footer class=\"editor-footer\">\n      <button type=\"button\" class=\"btn btn-success pull-right\" \n      (click)=\"submit()\">Submit Solution</button>\n  </footer>\n</section>\n"
 
 /***/ }),
 
@@ -251,6 +251,7 @@ var EditorComponent = /** @class */ (function () {
         this.languages = ['Java', 'Python'];
         this.language = 'Java';
         this.output = '';
+        this.users = '';
         this.defaultContent = {
             'Java': "public class Example {\n      public static void main(String[] args) {\n        // Type your Java code here\n      }\n    }\n    ",
             'Python': "class Solution:\n      def example():\n        # write your Python code here\n\n      if __name__ == '__main__':\n        example()\n       "
@@ -273,7 +274,8 @@ var EditorComponent = /** @class */ (function () {
         this.resetEditor();
         document.getElementsByTagName('textarea')[0].focus();
         // set up collaboration socket
-        this.collaboration.init(this.editor, this.sessionId);
+        this.collaboration.init(this.editor, this.sessionId)
+            .subscribe(function (users) { return _this.users = users; });
         this.editor.lastAppliedChange = null;
         // register change callback
         this.editor.on('change', function (e) {
@@ -701,6 +703,7 @@ var SearchPipe = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CollaborationService", function() { return CollaborationService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -711,10 +714,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var CollaborationService = /** @class */ (function () {
     function CollaborationService() {
+        this._userSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
     }
     CollaborationService.prototype.init = function (editor, sessionId) {
+        var _this = this;
         // establish socket connection
         this.collaborationSocket = io(window.location.origin, { query: 'sessionId=' + sessionId });
         // when receive change from the server, apply to local browser session
@@ -724,6 +730,11 @@ var CollaborationService = /** @class */ (function () {
             editor.lastAppliedChange = delta;
             editor.getSession().getDocument().applyDeltas([delta]);
         });
+        this.collaborationSocket.on('userChange', function (data) {
+            console.log('collaboration user change:' + data);
+            _this._userSource.next(data.toString());
+        });
+        return this._userSource.asObservable();
     };
     // send to server (which will forward to other participants)
     CollaborationService.prototype.change = function (delta) {
