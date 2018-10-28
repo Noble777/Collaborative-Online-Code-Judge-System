@@ -248,13 +248,14 @@ var EditorComponent = /** @class */ (function () {
         this.collaboration = collaboration;
         this.route = route;
         this.dataService = dataService;
-        this.languages = ['Java', 'Python'];
+        this.languages = ['Java', 'Python', 'C++'];
         this.language = 'Java';
         this.output = '';
         this.users = '';
         this.defaultContent = {
             'Java': "public class Example {\n      public static void main(String[] args) {\n        // Type your Java code here\n      }\n    }\n    ",
-            'Python': "class Solution:\n      def example():\n        # write your Python code here\n\n      if __name__ == '__main__':\n        example()\n       "
+            'Python': "class Solution:\n      def example():\n        # write your Python code here\n\n      if __name__ == '__main__':\n        example()\n       ",
+            'C++': "int main()\n    {\n      return 0;\n    }\n    "
         };
     }
     EditorComponent.prototype.ngOnInit = function () {
