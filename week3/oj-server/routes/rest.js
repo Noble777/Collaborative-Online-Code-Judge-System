@@ -37,6 +37,16 @@ router.post('/problems', jsonParser, (req, res) => {
 	});
 });
 
+// modify a problem
+router.put('/problems', jsonParser, (req, res) => {
+	problemService.modifyProblem(req.body)
+		.then(problem => {
+			res.json(problem);
+		}, error => {
+			res.status(400).send('Failed to update problem');
+		});
+});
+
 // this build_and_run was requeted from oj-client, req = request from oj-client
 // res = response to oj-client
 router.post('/build_and_run', jsonParser, (req, res) => {
